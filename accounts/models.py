@@ -9,14 +9,28 @@ class User(AbstractUser):
     # you can add more fields here.
 
 
-class Customer(models.Model):
+class ClientUser(models.Model):
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
-    mobile = models.CharField(max_length=100, blank=False, null=False)
-    nid = models.CharField(max_length=20, blank=False, null=False)
+    mobile = models.CharField(max_length=100, blank=False, null=False, unique=True)
+    email = models.CharField(max_length=100, blank=False, null=False, unique=True)
+    nid = models.CharField(max_length=20, blank=False, null=False, unique=True)
 
     def __str__(self):
-        return str(self.first_name+" "+self.last_name+"-"+self.mobile)
+        return str(self.first_name + " " + self.last_name + "-" + self.mobile)
 
+
+class Customer(models.Model):
+    user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+
+
+class CashOutAgent(models.Model):
+    user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+
+
+class Merchant(models.Model):
+    user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+    org_name = models.CharField(max_length=50, null=False, blank=False)
+    trade_lic = models.CharField(max_length=50, null=False, blank=False)
 
 

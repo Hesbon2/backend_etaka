@@ -1,13 +1,13 @@
 from phone_verify.models import SMSVerification
 from rest_framework import generics
-from .models import Customer
-from .serializer import CustomerSerializer
+from .models import Customer, ClientUser
+from .serializer import ClientUserSerializer
 from rest_framework.response import Response
 
 
 class CustomerList(generics.ListCreateAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
+    queryset = ClientUser.objects.all()
+    serializer_class = ClientUserSerializer
 
 
 # class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -21,8 +21,8 @@ class DetailsByToken(generics.RetrieveAPIView):
         try:
             token_obj = SMSVerification.objects.get(session_token=token)
             mobile = token_obj.phone_number
-            customer = Customer.objects.get(mobile=mobile)
-            serializer = CustomerSerializer(instance=customer)
+            client = ClientUser.objects.get(mobile=mobile)
+            serializer = ClientUserSerializer(instance=client)
             return Response(serializer.data)
         except:
             return Response({'error': 'not found'})
