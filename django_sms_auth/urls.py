@@ -21,5 +21,6 @@ import accounts
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('phone_verify.urls')),
-    path('accounts/', include('accounts.urls'))
+    path('accounts/', include('accounts.urls')),
+    path('transaction/', include('transactions.urls'))
 ]

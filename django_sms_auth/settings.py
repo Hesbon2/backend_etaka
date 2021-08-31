@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-"phone_verify",
-    'accounts.apps.AccountsConfig'
+    "phone_verify",
+    'accounts.apps.AccountsConfig',
+    'transactions.apps.TransactionsConfig'
 ]
 REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES':
