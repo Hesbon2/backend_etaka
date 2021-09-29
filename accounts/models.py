@@ -26,13 +26,16 @@ class ClientUser(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+    balance = models.FloatField(blank=False, null=False, default=0)
 
 
 class CashOutAgent(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+    balance = models.FloatField(blank=False, null=False, default=0)
 
 
 class Merchant(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     org_name = models.CharField(max_length=50, null=False, blank=False)
     trade_lic = models.CharField(max_length=50, null=False, blank=False)
+    balance = models.FloatField(blank=False, null=False, default=0)
