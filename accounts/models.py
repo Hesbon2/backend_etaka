@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+gender_choices = [
+    ('Male', 'Male'), ('Female', 'Female')
+]
+
 
 class User(AbstractUser):
-    gender = models.BooleanField(default=True),
+    gender = models.CharField(choices=gender_choices, null=False, blank=False),
     # mobile = models.CharField(null=False, blank=False, max_length=20)# True for male and False for female
     # password = None,
     # you can add more fields here.
@@ -32,5 +36,3 @@ class Merchant(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     org_name = models.CharField(max_length=50, null=False, blank=False)
     trade_lic = models.CharField(max_length=50, null=False, blank=False)
-
-

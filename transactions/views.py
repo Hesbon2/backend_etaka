@@ -19,7 +19,7 @@ class AddMoneyView(generics.RetrieveAPIView):
             mobile = token_obj.phone_number
             client = ClientUser.objects.get(mobile=mobile)
             add_money = AddMoney.objects.filter(customer__user=client)
-            print(add_money)
+            # print(add_money)
             # add_money = list(add_money)
             serializer = AddMoneySerializer(add_money, many=True, required=False)
             return Response(serializer.data)
