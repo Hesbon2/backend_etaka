@@ -21,6 +21,7 @@ class DetailsByToken(generics.RetrieveAPIView):
         try:
             token_obj = SMSVerification.objects.get(session_token=token)
             mobile = token_obj.phone_number
+            print(mobile)
             client = ClientUser.objects.get(mobile=mobile)
             serializer = ClientUserSerializer(instance=client)
             return Response(serializer.data)

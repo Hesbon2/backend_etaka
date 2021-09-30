@@ -149,8 +149,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PHONE_VERIFICATION = {
     "BACKEND": "phone_verify.backends.twilio.TwilioBackend",
     "OPTIONS": {
-        "SID": "ACf365d18367e7db2daee18446714fc6e0",
-        "SECRET": "108846b736fb95458c7766498b5ff168",
+        # "SID": "ACf365d18367e7db2daee18446714fc6e0",
+        # "SECRET": "108846b736fb95458c7766498b5ff168",
+        "SID": "AC",
+        "SECRET": "108",
         "FROM": "+14156809126",
         "SANDBOX_TOKEN": "123456",
     },
