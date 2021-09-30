@@ -31,31 +31,22 @@ class AddMoneyView(APIView):
     def post(self, request, *args, **kwargs):
         token = self.request.headers.get('Authorization')
         print("TOKEN::", token)
-        token_obj = SMSVerification.objects.get(session_token=token)
-        mobile = token_obj.phone_number
-        client = ClientUser.objects.get(mobile=mobile)
-        customer = Customer.objects.get(user=client)
-        cus_serializer = CustomerSerializer(instance=customer)
-        add_money = AddMoney(customer=customer, amount=request.data['amount'], issuer_bank=request.data['issuer_bank'],card_no=request.data['card_no'],
-        card_holder_name=request.data['card_holder_name'])
-        amount = request.POST.get('amount')
-        print(request.data['amount'])
-        add_money.save()
-        customer.balance = customer.balance+add_money.amount
-        customer.save()
-        data = {
-            "customer":cus_serializer.data,
-            "card_no": request.data['card_no'],
-            "card_holder_name": request.data['card_holder_name'],
-            "issuer_bank": request.data['issuer_bank'],
-            "amount": request.data['amount'],
-        }
-        serializer = AddMoneySerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            token_obj = SMSVerification.objects.get(session_token=token)
+            mobile = token_obj.phone_number
+            client = ClientUser.objects.get(mobile=mobile)
+            customer = Customer.objects.get(user=client)
+            cus_serializer = CustomerSerializer(instance=customer)
+            add_money = AddMoney(customer=customer, amount=request.data['amount'], issuer_bank=request.data['issuer_bank'],card_no=request.data['card_no'],
+            card_holder_name=request.data['card_holder_name'])
+            amount = request.POST.get('amount')
+            print(request.data['amount'])
+            add_money.save()
+            customer.balance = customer.balance+add_money.amount
+            customer.save()
             return Response({"status": "success"})
-        else:
-            return Response(serializer.errors)
+        except:
+            return Response({"status": "failed"})
 class AddMoneyCreate(generics.CreateAPIView):
     serializer = AddMoneySerializer
     
