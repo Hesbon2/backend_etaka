@@ -19,6 +19,7 @@ class ClientUser(models.Model):
     mobile = models.CharField(max_length=100, blank=False, null=False, unique=True)
     email = models.CharField(max_length=100, blank=False, null=False, unique=True)
     nid = models.CharField(max_length=20, blank=False, null=False, unique=True)
+    pin = models.CharField(max_length=5, null=False, blank=False, default='1111')
 
     def __str__(self):
         return str(self.first_name + " " + self.last_name + "-" + self.mobile)

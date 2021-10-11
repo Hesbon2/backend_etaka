@@ -3,7 +3,7 @@ from rest_framework import generics
 from .models import Customer, ClientUser
 from .serializer import ClientUserSerializer
 from rest_framework.response import Response
-
+from rest_framework import status
 
 class CustomerList(generics.ListCreateAPIView):
     queryset = ClientUser.objects.all()
@@ -26,4 +26,4 @@ class DetailsByToken(generics.RetrieveAPIView):
             serializer = ClientUserSerializer(instance=client)
             return Response(serializer.data)
         except:
-            return Response({'error': 'not found'})
+            return Response({'error': 'not found'},status= status.HTTP_404_NOT_FOUND )
