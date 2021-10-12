@@ -22,7 +22,7 @@ class ClientUser(models.Model):
     pin = models.CharField(max_length=5, null=False, blank=False, default='1111')
 
     def __str__(self):
-        return str(self.first_name + " " + self.last_name + "-" + self.mobile)
+        return str(self.first_name + " " + self.last_name + "-" + str(self.mobile))
 
 
 class Customer(models.Model):
