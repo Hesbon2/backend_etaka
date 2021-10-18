@@ -2,7 +2,7 @@ from accounts.serializer import CustomerSerializer
 from django.shortcuts import render
 # Create your views here.
 from phone_verify.models import SMSVerification
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accounts.models import ClientUser, Customer
@@ -27,7 +27,7 @@ class AddMoneyView(APIView):
             return Response(serializer.data)
         except:
             return Response({"error": "not found"})
-    
+
     def post(self, request, *args, **kwargs):
         token = self.request.headers.get('Authorization')
         print("TOKEN::", token)
@@ -37,19 +37,22 @@ class AddMoneyView(APIView):
             client = ClientUser.objects.get(mobile=mobile)
             customer = Customer.objects.get(user=client)
             cus_serializer = CustomerSerializer(instance=customer)
-            add_money = AddMoney(customer=customer, amount=request.data['amount'], issuer_bank=request.data['issuer_bank'],card_no=request.data['card_no'],
-            card_holder_name=request.data['card_holder_name'])
+            add_money = AddMoney(customer=customer, amount=request.data['amount'],
+                                 issuer_bank=request.data['issuer_bank'], card_no=request.data['card_no'],
+                                 card_holder_name=request.data['card_holder_name'])
             amount = request.POST.get('amount')
             print(request.data['amount'])
             add_money.save()
-            customer.balance = customer.balance+add_money.amount
+            customer.balance = customer.balance + add_money.amount
             customer.save()
             return Response({"status": "success"})
         except:
             return Response({"status": "failed"})
+
+
 class AddMoneyCreate(generics.CreateAPIView):
     serializer = AddMoneySerializer
-    
+
     def post(self, request, *args, **kwargs):
         serializer = AddMoneySerializer(data=request.data)
         if serializer.is_valid():
@@ -57,7 +60,6 @@ class AddMoneyCreate(generics.CreateAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
-        
 
 
 class MoneyTransferView(generics.RetrieveAPIView):
@@ -80,10 +82,33 @@ class MoneyTransferView(generics.RetrieveAPIView):
             return Response(serializer.data)
         except:
             return Response({"error": "not found"})
-    
+
+
 class MoneyTransferCreate(generics.CreateAPIView):
     model = MoneyTransfer
     serializer_class = MoneyTransferSerializer
+
+
+class SendMoney(APIView):
+    def post(self, request):
+        token = self.request.headers.get('Authorization')
+        print("TOKEN::", token)
+        try:
+            token_obj = SMSVerification.objects.get(session_token=token)
+            mobile = token_obj.phone_number
+            print(mobile)
+            client = Customer.objects.get(user__mobile=mobile)
+            receiver = Customer.objects.get(user__mobile=request.data['receiver'])
+            money_transfer = MoneyTransfer(sender=client, receiver=receiver, amount=request.data['amount'])
+            money_transfer.save()
+            client.balance = client.balance - request.data['amount']
+            receiver.balance = receiver.balance + request.data['amount']
+            client.save()
+            receiver.save()
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"error": "failed to send"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class PaymentView(generics.RetrieveAPIView):
 
@@ -121,7 +146,6 @@ class CashOutView(generics.RetrieveAPIView):
             return Response(serializer.data)
         except:
             return Response({"error": "not found"})
-
 
 
 class OfferList(generics.ListCreateAPIView):
