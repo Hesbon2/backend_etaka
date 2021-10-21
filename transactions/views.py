@@ -5,7 +5,7 @@ from phone_verify.models import SMSVerification
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from accounts.models import ClientUser, Customer
+from accounts.models import CashOutAgent, ClientUser, Customer
 from .models import AddMoney, MoneyTransfer, Payment, Cashout, Offer
 from .serializer import AddMoneySerializer, MoneyTransferSerializer, PaymentSerializer, OfferSerializer
 
@@ -129,7 +129,7 @@ class PaymentView(generics.RetrieveAPIView):
             return Response({"error": "not found"})
 
 
-class CashOutView(generics.RetrieveAPIView):
+class CashOutView(APIView):
 
     def get(self, request):
         # global serializer
@@ -146,6 +146,31 @@ class CashOutView(generics.RetrieveAPIView):
             return Response(serializer.data)
         except:
             return Response({"error": "not found"})
+
+
+    def post(self, request):
+        # global serializer
+        token = self.request.headers.get('Authorization')
+        print("TOKEN::", token)
+        try:
+            token_obj = SMSVerification.objects.get(session_token=token)
+            mobile = token_obj.phone_number
+            print(request.data['cashout_agent'])
+            client = Customer.objects.get(user__mobile=mobile)
+            print(client)
+            agent = CashOutAgent.objects.get(user__mobile=request.data['cashout_agent'])
+            print(agent)
+            print(request.data['cashout_amount'])
+            obj = Cashout(agent=agent, customer=client, amount=request.data['cashout_amount'])
+            obj.save()
+            client.balance = client.balance - request.data['cashout_amount']
+            agent.balance = agent.balance + request.data['cashout_amount']
+            client.save()
+            agent.save()
+            # add_money = list(add_money)
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"error": "failed to cashout"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OfferList(generics.ListCreateAPIView):
