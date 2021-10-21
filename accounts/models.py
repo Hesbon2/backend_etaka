@@ -34,9 +34,13 @@ class CashOutAgent(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     balance = models.FloatField(blank=False, null=False, default=0)
 
-
+merchant_type_list = [
+    ("ELEC", "Electricity", ), ("WAT", "Water"), ("GAS", "Gas"), ("EDU", "Education"), ("NET", "Internet"), ("CARD", "Credit Card"),
+    ("TEL", "Telephone"), ("TV", "Television")
+]
 class Merchant(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     org_name = models.CharField(max_length=50, null=False, blank=False)
+    merchant_type = models.CharField(max_length=100,choices= merchant_type_list, blank=True,null= True)
     trade_lic = models.CharField(max_length=50, null=False, blank=False)
     balance = models.FloatField(blank=False, null=False, default=0)

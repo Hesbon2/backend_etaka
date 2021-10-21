@@ -1,19 +1,27 @@
 from phone_verify.models import SMSVerification
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Customer, ClientUser
-from .serializer import ClientUserSerializer
+from .models import Customer, ClientUser, Merchant
+from .serializer import ClientUserSerializer, MerchantSerializer
 from rest_framework.response import Response
 from rest_framework import status
-
+from django_filters import rest_framework as filters
 class CustomerList(generics.ListCreateAPIView):
     queryset = ClientUser.objects.all()
     serializer_class = ClientUserSerializer
+    
 
 
 # class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Snippet.objects.all()
 #     serializer_class = SnippetSerializer
+
+
+class MerchantList(generics.ListCreateAPIView):
+    queryset = Merchant.objects.all()
+    serializer_class = MerchantSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('merchant_type',)
 
 class DetailsByToken(APIView):
     def get(self, request):

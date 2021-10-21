@@ -41,12 +41,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "phone_verify",
     'accounts.apps.AccountsConfig',
-    'transactions.apps.TransactionsConfig'
+    'transactions.apps.TransactionsConfig',
+     'django_filters',
 ]
 REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES':
     ('rest_framework.authentication.TokenAuthentication',
- )}
+ ),
+ 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+ }
 
 
 #     # If another provider

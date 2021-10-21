@@ -7,6 +7,7 @@ class Payment(models.Model):
     customer = models.ForeignKey(Customer, to_field="user", on_delete=models.CASCADE)
     merchant = models.ForeignKey(Merchant, to_field="user", on_delete=models.CASCADE)
     amount = models.FloatField(null=False, blank=False)
+    reference = models.CharField(max_length=200, blank=True, null=True)
     datetime = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
