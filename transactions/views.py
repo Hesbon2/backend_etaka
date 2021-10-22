@@ -5,7 +5,7 @@ from phone_verify.models import SMSVerification
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from accounts.models import CashOutAgent, ClientUser, Customer
+from accounts.models import CashOutAgent, ClientUser, Customer, Merchant
 from .models import AddMoney, MoneyTransfer, Payment, Cashout, Offer
 from .serializer import AddMoneySerializer, MoneyTransferSerializer, PaymentSerializer, OfferSerializer
 
@@ -176,3 +176,48 @@ class CashOutView(APIView):
 class OfferList(generics.ListCreateAPIView):
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
+
+class BillPaymentView(APIView):
+
+    # def get(self, request):
+    #     # global serializer
+    #     token = self.request.headers.get('Authorization')
+    #     print("TOKEN::", token)
+    #     try:
+    #         token_obj = SMSVerification.objects.get(session_token=token)
+    #         mobile = token_obj.phone_number
+    #         client = Customer.objects.get(user__mobile=mobile)
+    #         result = Cashout.objects.filter(customer=client)
+    #         print(result)
+    #         # add_money = list(add_money)
+    #         serializer = PaymentSerializer(result, many=True, required=False)
+    #         return Response(serializer.data)
+    #     except:
+    #         return Response({"error": "not found"})
+
+
+    def post(self, request):
+        # global serializer
+        token = self.request.headers.get('Authorization')
+        print("TOKEN::", token)
+        try:
+            token_obj = SMSVerification.objects.get(session_token=token)
+            mobile = token_obj.phone_number
+            print(mobile)
+            print(request.data['merchant_id'])
+            client = Customer.objects.get(user__mobile=mobile)
+            print(client)
+            merchant = Merchant.objects.get(id=request.data['merchant_id'])
+            print(merchant)
+            print(request.data['bill_amount'])
+            obj = Payment(merchant=merchant, customer=client, amount=request.data['bill_amount'],reference=request.data['reference'])
+            obj.save()
+            client.balance = client.balance - request.data['bill_amount']
+            merchant.balance = merchant.balance + request.data['bill_amount']
+            client.save()
+            merchant.save()
+            # add_money = list(add_money)
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"error": "failed to payment"}, status=status.HTTP_400_BAD_REQUEST)
+
