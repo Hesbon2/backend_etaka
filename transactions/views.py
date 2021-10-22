@@ -203,7 +203,8 @@ class BillPaymentView(APIView):
         try:
             token_obj = SMSVerification.objects.get(session_token=token)
             mobile = token_obj.phone_number
-            print(request.data['cashout_agent'])
+            print(mobile)
+            print(request.data['merchant_id'])
             client = Customer.objects.get(user__mobile=mobile)
             print(client)
             merchant = Merchant.objects.get(id=request.data['merchant_id'])
@@ -211,12 +212,12 @@ class BillPaymentView(APIView):
             print(request.data['bill_amount'])
             obj = Payment(merchant=merchant, customer=client, amount=request.data['bill_amount'],reference=request.data['reference'])
             obj.save()
-            client.balance = client.balance - request.data['cashout_amount']
-            merchant.balance = merchant.balance + request.data['cashout_amount']
+            client.balance = client.balance - request.data['bill_amount']
+            merchant.balance = merchant.balance + request.data['bill_amount']
             client.save()
             merchant.save()
             # add_money = list(add_money)
             return Response({"status": "success"}, status=status.HTTP_200_OK)
         except:
-            return Response({"error": "failed to cashout"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "failed to payment"}, status=status.HTTP_400_BAD_REQUEST)
 
