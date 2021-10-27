@@ -1,3 +1,4 @@
+from django.db.models.query_utils import FilteredRelation
 from accounts.serializer import CustomerSerializer
 from django.shortcuts import render
 # Create your views here.
@@ -176,6 +177,8 @@ class CashOutView(APIView):
 class OfferList(generics.ListCreateAPIView):
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
+    filter_backends = (FilteredRelation.DjangoFilterBackend,)
+    filterset_fields = ('location',)
 
 class BillPaymentView(APIView):
 
