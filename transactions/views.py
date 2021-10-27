@@ -177,7 +177,7 @@ class CashOutView(APIView):
 class OfferList(generics.ListCreateAPIView):
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
-    filter_backends = (FilteredRelation.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ('location',)
 
 class BillPaymentView(APIView):
