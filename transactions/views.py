@@ -1,4 +1,4 @@
-from django.db.models.query_utils import FilteredRelation
+from django_filters import rest_framework as filters
 from accounts.serializer import CustomerSerializer
 from django.shortcuts import render
 # Create your views here.
