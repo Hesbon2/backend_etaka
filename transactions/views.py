@@ -241,7 +241,7 @@ class TransactionHistory(APIView):
             token_obj = SMSVerification.objects.get(session_token=token)
             mobile = token_obj.phone_number
             client = ClientUser.objects.get(mobile=mobile)
-            tran_history = History.objects.filter(customer__user=client)
+            tran_history = History.objects.filter(user=client)
             # print(add_money)
             # add_money = list(add_money)
             serializer = HistorySerializer(tran_history, many=True, required=False)
