@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AddMoney, MoneyTransfer, Payment, Cashout, Offer
+from .models import AddMoney, History, MoneyTransfer, Payment, Cashout, Offer
 from phone_verify.models import SMSVerification
 from accounts.models import ClientUser
 from accounts.models import Customer, Merchant, CashOutAgent
@@ -58,3 +58,9 @@ class OfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = '__all__'
+
+
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = ['amount','user','translation_type']

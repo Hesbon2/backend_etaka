@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import ClientUser, CashOutAgent, Merchant, Customer, User
+import uuid
 
 
 # Create your models here.
@@ -67,11 +68,14 @@ class Offer(models.Model):
 
 
 type_choice = [
-    ('Send Money', 'SEND'), ('Receive Money', 'RECEIVE'), ('Bill Payment', 'BILLPAY'), ('Mobile Recharge', 'RECHARGE'), ('Add Money', 'ADDMONEY')
+    ('SEND', 'Send Money'), ('RECEIVE', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('ADDMONEY','Add Money')
 ]
 class History(models.Model):
     translation_type = models.CharField(choices=type_choice, max_length=100, null=False, blank=False)
-    translation_id = models.CharField(max_length=100, null=False, blank=False)
+    trans_id =models.CharField(primary_key=True, max_length=50, editable=False)
     amount = models.FloatField(null=False, blank=False, default=0)
     datetime = models.DateTimeField(auto_now_add=True, blank=True)
-    user = models.ForeignKey(ClientUser, related_name='user', on_delete=models.CASCADE)
+    user = models.ForeignKey(ClientUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.trans_id+" : "+self.user.mobile)

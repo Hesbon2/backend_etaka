@@ -1,3 +1,4 @@
+import uuid
 from django_filters import rest_framework as filters
 from accounts.serializer import CustomerSerializer
 from django.shortcuts import render
@@ -7,8 +8,8 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accounts.models import CashOutAgent, ClientUser, Customer, Merchant
-from .models import AddMoney, MoneyTransfer, Payment, Cashout, Offer
-from .serializer import AddMoneySerializer, MoneyTransferSerializer, PaymentSerializer, OfferSerializer
+from .models import AddMoney, History, MoneyTransfer, Payment, Cashout, Offer
+from .serializer import AddMoneySerializer, HistorySerializer, MoneyTransferSerializer, PaymentSerializer, OfferSerializer
 
 
 class AddMoneyView(APIView):
@@ -32,23 +33,28 @@ class AddMoneyView(APIView):
     def post(self, request, *args, **kwargs):
         token = self.request.headers.get('Authorization')
         print("TOKEN::", token)
-        try:
-            token_obj = SMSVerification.objects.get(session_token=token)
-            mobile = token_obj.phone_number
-            client = ClientUser.objects.get(mobile=mobile)
-            customer = Customer.objects.get(user=client)
-            cus_serializer = CustomerSerializer(instance=customer)
-            add_money = AddMoney(customer=customer, amount=request.data['amount'],
-                                 issuer_bank=request.data['issuer_bank'], card_no=request.data['card_no'],
-                                 card_holder_name=request.data['card_holder_name'])
-            amount = request.POST.get('amount')
-            print(request.data['amount'])
-            add_money.save()
-            customer.balance = customer.balance + add_money.amount
-            customer.save()
-            return Response({"status": "success"})
-        except:
-            return Response({"status": "failed"})
+        #try:
+        token_obj = SMSVerification.objects.get(session_token=token)
+        mobile = token_obj.phone_number
+        client = ClientUser.objects.get(mobile=mobile)
+        customer = Customer.objects.get(user=client)
+        cus_serializer = CustomerSerializer(instance=customer)
+        add_money = AddMoney(customer=customer, amount=request.data['amount'],
+                                issuer_bank=request.data['issuer_bank'], card_no=request.data['card_no'],
+                                card_holder_name=request.data['card_holder_name'])
+        amount = request.POST.get('amount')
+        print(request.data['amount'])
+        add_money.save()
+        trn_id = uuid.uuid4().hex[:10].upper()
+        history = History(amount=request.data['amount'], user= client, translation_type="ADDMONEY", trans_id=trn_id)
+        customer.balance = customer.balance + add_money.amount
+        customer.save()
+        data = {"status": "success",
+                "tran_id" : trn_id
+                }
+        return Response(data)
+        # except:
+        #     return Response({"status": "failed"})
 
 
 class AddMoneyCreate(generics.CreateAPIView):
@@ -177,7 +183,7 @@ class CashOutView(APIView):
 class OfferList(generics.ListCreateAPIView):
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
-    filter_backends = (FilteredRelation.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ('location',)
 
 class BillPaymentView(APIView):
