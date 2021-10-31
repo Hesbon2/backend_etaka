@@ -71,7 +71,7 @@ type_choice = [
     ('SEND', 'Send Money'), ('RECEIVE', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('ADDMONEY','Add Money')
 ]
 class History(models.Model):
-    translation_type = models.CharField(choices=type_choice, max_length=100, null=False, blank=False)
+    trans_type = models.CharField(choices=type_choice, max_length=100, null=False, blank=False)
     trans_id =models.CharField(primary_key=True, max_length=50, editable=False)
     amount = models.FloatField(null=False, blank=False, default=0)
     datetime = models.DateTimeField(auto_now_add=True, blank=True)

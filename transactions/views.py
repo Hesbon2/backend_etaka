@@ -46,7 +46,8 @@ class AddMoneyView(APIView):
         print(request.data['amount'])
         add_money.save()
         trn_id = uuid.uuid4().hex[:10].upper()
-        history = History(amount=request.data['amount'], user= client, translation_type="ADDMONEY", trans_id=trn_id)
+        history = History(amount=request.data['amount'], user= client, trans_type="ADDMONEY", trans_id=trn_id)
+        history.save()
         customer.balance = customer.balance + add_money.amount
         customer.save()
         data = {"status": "success",
@@ -230,3 +231,20 @@ class BillPaymentView(APIView):
         except:
             return Response({"error": "failed to payment"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class TransactionHistory(APIView):
+    def get(self, request):
+        # global serializer
+        token = self.request.headers.get('Authorization')
+        print("TOKEN::", token)
+        try:
+            token_obj = SMSVerification.objects.get(session_token=token)
+            mobile = token_obj.phone_number
+            client = ClientUser.objects.get(mobile=mobile)
+            tran_history = History.objects.filter(customer__user=client)
+            # print(add_money)
+            # add_money = list(add_money)
+            serializer = HistorySerializer(tran_history, many=True, required=False)
+            return Response(serializer.data)
+        except:
+            return Response({"error": "not found"})
