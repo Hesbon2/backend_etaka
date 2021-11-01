@@ -1,4 +1,4 @@
-# GoCardless sample application
+# eTaka Backend application
 
 ## Setup
 
