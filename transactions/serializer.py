@@ -63,4 +63,4 @@ class OfferSerializer(serializers.ModelSerializer):
 class HistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = History
-        fields = ['amount','user','translation_type']
+        fields = '__all__'

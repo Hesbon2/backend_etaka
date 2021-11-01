@@ -237,14 +237,14 @@ class TransactionHistory(APIView):
         # global serializer
         token = self.request.headers.get('Authorization')
         print("TOKEN::", token)
-        try:
-            token_obj = SMSVerification.objects.get(session_token=token)
-            mobile = token_obj.phone_number
-            client = ClientUser.objects.get(mobile=mobile)
-            tran_history = History.objects.filter(user=client)
-            # print(add_money)
-            # add_money = list(add_money)
-            serializer = HistorySerializer(tran_history, many=True, required=False)
-            return Response(serializer.data)
-        except:
-            return Response({"error": "not found"})
+        # try:
+        token_obj = SMSVerification.objects.get(session_token=token)
+        mobile = token_obj.phone_number
+        client = ClientUser.objects.get(mobile=mobile)
+        tran_history = History.objects.filter(user=client)
+        # print(add_money)
+        # add_money = list(add_money)
+        serializer = HistorySerializer(tran_history, many=True, required=False)
+        return Response(serializer.data)
+        # except:
+        #     return Response({"error": "not found"})
