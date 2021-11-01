@@ -231,7 +231,7 @@ class BillPaymentView(APIView):
             client.balance = client.balance - request.data['bill_amount']
             merchant.balance = merchant.balance + request.data['bill_amount']
             trn_id = uuid.uuid4().hex[:10].upper()
-            history = History(amount=request.data['bill_amount'], user= client, trans_type="BILLPAY", trans_id=trn_id)
+            history = History(amount=request.data['bill_amount'], user= client.user, trans_type="BILLPAY", trans_id=trn_id)
             history.save()
             client.save()
             merchant.save()
