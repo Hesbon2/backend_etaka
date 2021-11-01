@@ -68,7 +68,7 @@ class Offer(models.Model):
 
 
 type_choice = [
-    ('SEND', 'Send Money'), ('RECEIVE', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('ADDMONEY','Add Money')
+    ('SEND', 'Send Money'), ('RECEIVE', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('ADDMONEY','Add Money'), ('CASHOUT','Cash Out')
 ]
 class History(models.Model):
     trans_type = models.CharField(choices=type_choice, max_length=100, null=False, blank=False)

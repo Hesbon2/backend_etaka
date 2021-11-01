@@ -111,6 +111,9 @@ class SendMoney(APIView):
             money_transfer.save()
             client.balance = client.balance - request.data['amount']
             receiver.balance = receiver.balance + request.data['amount']
+            trn_id = uuid.uuid4().hex[:10].upper()
+            history = History(amount=request.data['amount'], user= client, trans_type="SEND", trans_id=trn_id)
+            history.save()
             client.save()
             receiver.save()
             return Response({"status": "success"}, status=status.HTTP_200_OK)
@@ -173,6 +176,9 @@ class CashOutView(APIView):
             obj.save()
             client.balance = client.balance - request.data['cashout_amount']
             agent.balance = agent.balance + request.data['cashout_amount']
+            trn_id = uuid.uuid4().hex[:10].upper()
+            history = History(amount=request.data['cashout_amount'], user= client, trans_type="CASHOUT", trans_id=trn_id)
+            history.save()
             client.save()
             agent.save()
             # add_money = list(add_money)
@@ -224,6 +230,9 @@ class BillPaymentView(APIView):
             obj.save()
             client.balance = client.balance - request.data['bill_amount']
             merchant.balance = merchant.balance + request.data['bill_amount']
+            trn_id = uuid.uuid4().hex[:10].upper()
+            history = History(amount=request.data['bill_amount'], user= client, trans_type="BILLPAY", trans_id=trn_id)
+            history.save()
             client.save()
             merchant.save()
             # add_money = list(add_money)
