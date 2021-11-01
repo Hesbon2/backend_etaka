@@ -61,6 +61,7 @@ class Offer(models.Model):
     details = models.CharField(max_length=200, null=False, blank=False)
     start_datetime = models.DateTimeField(blank=True)
     end_datetime = models.DateTimeField(blank=True)
+    photo = models.ImageField(null=True, blank=True, upload_to='Offer/', )
     location = models.CharField(max_length=100, null=False, blank=False, default="Dhaka")
 
     def __str__(self):

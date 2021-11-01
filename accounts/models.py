@@ -29,12 +29,18 @@ class Customer(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     balance = models.FloatField(blank=False, null=False, default=0)
     photo = models.ImageField(null=True, blank=True, upload_to='Picture/Customer/', )
+    
+    def __str__(self):
+        return str(self.user.first_name+" "+ self.user.last_name)
 
 
 class CashOutAgent(models.Model):
     user = models.OneToOneField(ClientUser, to_field="mobile", on_delete=models.CASCADE)
     balance = models.FloatField(blank=False, null=False, default=0)
     photo = models.ImageField(null=True, blank=True, upload_to='Picture/Agent/', )
+
+    def __str__(self):
+        return str(self.user.first_name+" "+ self.user.last_name)
 
 merchant_type_list = [
     ("ELEC", "Electricity", ), ("WAT", "Water"), ("GAS", "Gas"), ("EDU", "Education"), ("NET", "Internet"), ("CARD", "Credit Card"),
@@ -47,3 +53,6 @@ class Merchant(models.Model):
     trade_lic = models.CharField(max_length=50, null=False, blank=False)
     balance = models.FloatField(blank=False, null=False, default=0)
     photo = models.ImageField(null=True, blank=True, upload_to='Picture/Merchant/', )
+
+    def __str__(self):
+        return str(self.org_name)
