@@ -101,24 +101,24 @@ class SendMoney(APIView):
     def post(self, request):
         token = self.request.headers.get('Authorization')
         print("TOKEN::", token)
-        try:
-            token_obj = SMSVerification.objects.get(session_token=token)
-            mobile = token_obj.phone_number
-            print(mobile)
-            client = Customer.objects.get(user__mobile=mobile)
-            receiver = Customer.objects.get(user__mobile=request.data['receiver'])
-            money_transfer = MoneyTransfer(sender=client, receiver=receiver, amount=request.data['amount'])
-            money_transfer.save()
-            client.balance = client.balance - request.data['amount']
-            receiver.balance = receiver.balance + request.data['amount']
-            trn_id = uuid.uuid4().hex[:10].upper()
-            history = History(amount=request.data['amount'], user= client.user, trans_type="SEND", trans_id=trn_id)
-            history.save()
-            client.save()
-            receiver.save()
-            return Response({"status": "success"}, status=status.HTTP_200_OK)
-        except:
-            return Response({"error": "failed to send"}, status=status.HTTP_400_BAD_REQUEST)
+       # try:
+        token_obj = SMSVerification.objects.get(session_token=token)
+        mobile = token_obj.phone_number
+        print(mobile)
+        client = Customer.objects.get(user__mobile=mobile)
+        receiver = Customer.objects.get(user__mobile=request.data['receiver'])
+        money_transfer = MoneyTransfer(sender=client, receiver=receiver, amount=request.data['amount'])
+        money_transfer.save()
+        client.balance = client.balance - request.data['amount']
+        receiver.balance = receiver.balance + request.data['amount']
+        trn_id = uuid.uuid4().hex[:10].upper()
+        history = History(amount=request.data['amount'], user= client.user, trans_type="SEND", trans_id=trn_id)
+        history.save()
+        client.save()
+        receiver.save()
+        return Response({"status": "success"}, status=status.HTTP_200_OK)
+        # except:
+        #     return Response({"error": "failed to send"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PaymentView(generics.RetrieveAPIView):
