@@ -112,7 +112,7 @@ class SendMoney(APIView):
             client.balance = client.balance - request.data['amount']
             receiver.balance = receiver.balance + request.data['amount']
             trn_id = uuid.uuid4().hex[:10].upper()
-            history = History(amount=request.data['amount'], user= client, trans_type="SEND", trans_id=trn_id)
+            history = History(amount=request.data['amount'], user= client.user, trans_type="SEND", trans_id=trn_id)
             history.save()
             client.save()
             receiver.save()
@@ -177,7 +177,7 @@ class CashOutView(APIView):
             client.balance = client.balance - request.data['cashout_amount']
             agent.balance = agent.balance + request.data['cashout_amount']
             trn_id = uuid.uuid4().hex[:10].upper()
-            history = History(amount=request.data['cashout_amount'], user= client, trans_type="CASHOUT", trans_id=trn_id)
+            history = History(amount=request.data['cashout_amount'], user= client.user, trans_type="CASHOUT", trans_id=trn_id)
             history.save()
             client.save()
             agent.save()
