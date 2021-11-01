@@ -65,7 +65,7 @@ class Offer(models.Model):
     location = models.CharField(max_length=100, null=False, blank=False, default="Dhaka")
 
     def __str__(self):
-        return str(self.title)
+        return str(self.title+" : "+self.location)
 
 
 type_choice = [

@@ -114,6 +114,10 @@ class SendMoney(APIView):
             trn_id = uuid.uuid4().hex[:10].upper()
             history = History(amount=request.data['amount'], user= client.user, trans_type="SEND", trans_id=trn_id)
             history.save()
+
+            trn_id1 = uuid.uuid4().hex[:10].upper()
+            history1 = History(amount=request.data['amount'], user= receiver.user, trans_type="RECEIVE", trans_id=trn_id1)
+            history1.save()
             client.save()
             receiver.save()
             return Response({"status": "success"}, status=status.HTTP_200_OK)
