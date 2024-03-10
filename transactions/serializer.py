@@ -10,8 +10,8 @@ class AddMoneySerializer(serializers.ModelSerializer):
     customer = CustomerSerializer()
     # customer_id = serializers.CharField(max_length=20)
 
-    
-    
+
+
     # def get_customer(self, obj):
     #     # request = self.context.get('request')
     #     # token = request.headers.get('Authorization')
@@ -21,9 +21,9 @@ class AddMoneySerializer(serializers.ModelSerializer):
     #     # customer = Customer.objects.get(user__mobile=mobile)
     #     # print(mobile)
     #     # serializer = CustomerSerializer(instance=customer)
-    #     self.obj.customer = 
+    #     self.obj.customer =
     #     return mobile
-    
+
     class Meta:
         model = AddMoney
         fields = '__all__'
@@ -61,6 +61,11 @@ class OfferSerializer(serializers.ModelSerializer):
 
 
 class HistorySerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField('username')
     class Meta:
         model = History
         fields = '__all__'
+
+    def username(self, obj):
+        user_name = ClientUser.objects.get(id=obj.user).mobile
+        return user_name

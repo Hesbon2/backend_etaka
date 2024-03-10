@@ -76,7 +76,7 @@ class History(models.Model):
     trans_id =models.CharField(primary_key=True, max_length=50, editable=False)
     amount = models.FloatField(null=False, blank=False, default=0)
     datetime = models.DateTimeField(auto_now_add=True, blank=True)
-    user = models.ForeignKey(ClientUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(ClientUser, to_field="mobile", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.trans_id+" : "+self.user.mobile)
