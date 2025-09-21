@@ -19,10 +19,19 @@ class MoneyTransfer(models.Model):
     sender = models.ForeignKey(Customer, to_field="user", on_delete=models.CASCADE, related_name="sender")
     receiver = models.ForeignKey(Customer, to_field="user", on_delete=models.CASCADE, related_name="receiver")
     amount = models.FloatField(null=False, blank=False)
+    description = models.CharField(max_length=500, null=False, blank=False)
+    beneficiary = models.CharField(max_length=500, null=True, blank=True)
+    trans_mode = models.CharField(max_length=500, null=True, blank=True)
+    ben_account = models.CharField(max_length=500, null=True, blank=True)
+
+    # NEW FIELDS
+    bank_name = models.CharField(max_length=200, null=True, blank=True)
+    branch_code = models.CharField(max_length=50, null=True, blank=True)
+
     datetime = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return str(self.sender.user.first_name+"-"+self.receiver.user.first_name+":"+str(self.amount))
+        return str(self.sender.user.first_name+"-"+self.receiver.user.first_name+"-"+str(self.description)+"-"+str(self.beneficiary)+"-"+str(self.trans_mode)+"-"+str(self.ben_account)+"-"+str(self.bank_name)+"-"+str(self.branch_code)+":"+str(self.amount))
 
 
 class AddMoney(models.Model):
@@ -69,14 +78,23 @@ class Offer(models.Model):
 
 
 type_choice = [
-    ('SEND', 'Send Money'), ('RECEIVE', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('ADDMONEY','Add Money'), ('CASHOUT','Cash Out')
+    ('Debit', 'Send Money'), ('Credit', 'Receive Money'), ( 'BILLPAY', 'Bill Payment'), ('RECHARGE', 'Mobile Recharge', ), ('Credit','Add Money'), ('CASHOUT','Cash Out')
 ]
 class History(models.Model):
     trans_type = models.CharField(choices=type_choice, max_length=100, null=False, blank=False)
-    trans_id =models.CharField(primary_key=True, max_length=50, editable=False)
+    trans_id = models.CharField(primary_key=True, max_length=50, editable=False)
     amount = models.FloatField(null=False, blank=False, default=0)
     datetime = models.DateTimeField(auto_now_add=True, blank=True)
     user = models.ForeignKey(ClientUser, to_field="mobile", on_delete=models.CASCADE)
+    description = models.CharField(max_length=500, null=False, blank=False)
+    bal = models.FloatField(editable=False)
+    beneficiary = models.CharField(max_length=500, null=True, blank=True)
+    trans_mode = models.CharField(max_length=500, null=True, blank=True)
+    ben_account = models.CharField(max_length=500, null=True, blank=True)
+
+    # NEW FIELDS - ADD THESE TWO LINES:
+    bank_name = models.CharField(max_length=200, null=True, blank=True)
+    branch_code = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return str(self.trans_id+" : "+self.user.mobile)

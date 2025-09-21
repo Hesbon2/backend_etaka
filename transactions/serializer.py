@@ -8,21 +8,6 @@ from accounts.serializer import ClientUserSerializer, CustomerSerializer, CashOu
 
 class AddMoneySerializer(serializers.ModelSerializer):
     customer = CustomerSerializer()
-    # customer_id = serializers.CharField(max_length=20)
-
-
-
-    # def get_customer(self, obj):
-    #     # request = self.context.get('request')
-    #     # token = request.headers.get('Authorization')
-    #     # print("TOKEN::", token)
-    #     # token_obj = SMSVerification.objects.get(session_token=token)
-    #     # mobile = token_obj.phone_number
-    #     # customer = Customer.objects.get(user__mobile=mobile)
-    #     # print(mobile)
-    #     # serializer = CustomerSerializer(instance=customer)
-    #     self.obj.customer =
-    #     return mobile
 
     class Meta:
         model = AddMoney
@@ -61,11 +46,12 @@ class OfferSerializer(serializers.ModelSerializer):
 
 
 class HistorySerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField('username')
+    username = serializers.SerializerMethodField('get_username')
+
     class Meta:
         model = History
         fields = '__all__'
 
-    def username(self, obj):
-        user_name = ClientUser.objects.get(id=obj.user).mobile
+    def get_username(self, obj):
+        user_name = ClientUser.objects.get(id=obj.user.id).mobile
         return user_name
